@@ -1,0 +1,28 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="warning">
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>Gráficos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-button expand="block" (click)="loadChart()" class="ion-margin">
+    Carregar Gráfico
+  </ion-button>
+
+  <div *ngIf="hasData" class="chart-container">
+    <canvas baseChart
+      [data]="chartData"
+      [options]="chartOptions"
+      [type]="chartType">
+    </canvas>
+  </div>
+
+  <div *ngIf="!hasData" class="ion-padding empty-state">
+    <ion-icon name="stats-chart-outline" color="medium" class="empty-icon"></ion-icon>
+    <ion-text color="medium" class="empty-text">
+      <h2>Nenhum dado disponível</h2>
+      <p>Adicione gastos na página "Inserir" para visualizar o gráfico</p>
+    </ion-text>
+  </div>
+</ion-content>

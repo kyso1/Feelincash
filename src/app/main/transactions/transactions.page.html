@@ -1,0 +1,65 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="danger">
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>Transações</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6">
+        <ion-select placeholder="Mês" (ionChange)="selecionarMes($event.detail.value)">
+          <ion-select-option *ngFor="let m of [1,2,3,4,5,6,7,8,9,10,11,12]" [value]="m">
+            {{ m < 10 ? '0' + m : m }}
+          </ion-select-option>
+        </ion-select>
+      </ion-col>
+      <ion-col size="6">
+        <ion-select placeholder="Ano" (ionChange)="selecionarAno($event.detail.value)">
+          <ion-select-option *ngFor="let a of [2023, 2024, 2025]" [value]="a">{{ a }}</ion-select-option>
+        </ion-select>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <ion-segment [(ngModel)]="ordenacao" (ionChange)="selecionarOrdenacao(ordenacao)">
+          <ion-segment-button value="data">
+            <ion-label>Data</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="valor">
+            <ion-label>Valor</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="nome">
+            <ion-label>Nome</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-list *ngIf="transacoesFiltradas.length > 0; else semTransacoes">
+    <ion-item-sliding *ngFor="let item of transacoesFiltradas; let i = index">
+      <ion-item>
+        <ion-label>
+          <h2>{{ item.nome }}</h2>
+          <p>R$ {{ item.valor | number: '1.2-2' }}</p>
+          <small>{{ item.data | date: 'dd/MM/yyyy' }}</small>
+        </ion-label>
+      </ion-item>
+      <ion-item-options side="end">
+        <ion-item-option color="danger" (click)="excluirTransacao(i)">
+          Excluir
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+  <ng-template #semTransacoes>
+    <ion-text color="medium">
+      <p class="ion-text-center">Nenhuma transação encontrada.</p>
+    </ion-text>
+  </ng-template>
+</ion-content>

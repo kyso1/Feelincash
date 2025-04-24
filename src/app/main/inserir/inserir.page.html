@@ -1,0 +1,54 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="dark">
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>Home</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="gastoForm" (ngSubmit)="adicionarGasto()">
+    <ion-item>
+      <ion-label position="floating">Nome</ion-label>
+      <ion-input formControlName="nome"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Valor (R$)</ion-label>
+      <ion-input type="number" formControlName="valor"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Data (DD/MM/AAAA)</ion-label>
+      <ion-input
+        formControlName="data"
+        type="text"
+        maxlength="10"
+        (ionInput)="formatarDataInput($event)"
+      ></ion-input>
+    </ion-item>
+
+    <ion-text color="danger" *ngIf="gastoForm.get('data')?.hasError('dataInvalida') && gastoForm.get('data')?.touched">
+      <p class="ion-padding-start">Data inválida. Use um valor real.</p>
+    </ion-text>
+
+    <ion-button expand="full" type="submit" [disabled]="gastoForm.invalid">
+      Adicionar
+    </ion-button>
+  </form>
+
+  <ion-list *ngIf="listaGastos.length > 0">
+    <ion-item *ngFor="let gasto of listaGastos">
+      <ion-label>
+        <h2>{{ gasto.nome }} - R$ {{ gasto.valor }}</h2>
+        <p>{{ gasto.data | date: 'dd/MM/yyyy' }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-button expand="full" color="danger" (click)="limparGastos()">
+    Limpar Todos os Gastos
+  </ion-button>
+</ion-content>
+
+<!-- <ion-button expand="full" color="tertiary" (click)="verificarDados()">
+</ion-button> -->
