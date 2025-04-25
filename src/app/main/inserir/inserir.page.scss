@@ -1,0 +1,42 @@
+.custom-button {
+    --border-radius: 20px;
+    --padding-start: 16px;
+    --padding-end: 16px;
+    --padding-top: 10px;
+    --padding-bottom: 10px;
+    --box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    --background: #00276b;
+    --background-hover: #4c8dff;
+    --color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin-top: 12px;
+  }
+  
+  .custom-button:hover {
+    filter: brightness(1.1);
+    transform: scale(1.03);
+  }
+  
+  .custom-button.danger {
+    --background: #970014;
+    --background-hover: #bb001c;
+  }
+  
+  .custom-button.danger:hover {
+    filter: brightness(1.05);
+    transform: scale(1.03);
+  }
+  
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+  }

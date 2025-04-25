@@ -5,7 +5,6 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { IonicStorageModule } from '@ionic/storage-angular';
-import { BaseChartDirective } from 'ng2-charts';
 
 @NgModule({
   declarations: [AppComponent],
@@ -14,7 +13,6 @@ import { BaseChartDirective } from 'ng2-charts';
     IonicModule.forRoot(),
     AppRoutingModule,
     IonicStorageModule.forRoot(),
-    BaseChartDirective
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }

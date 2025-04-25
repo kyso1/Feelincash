@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-toolbar color="light">
+    <ion-title>Contas Fixas e Salário</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="fechar()">Fechar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <form [formGroup]="form">
+    <ion-item>
+      <ion-label position="floating">Salário</ion-label>
+      <ion-input type="text" (ionInput)="formatarValorInput($event,'salario')" formControlName="salario"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Aluguel</ion-label>
+      <ion-input type="text" (ionInput)="formatarValorInput($event,'aluguel')" formControlName="aluguel"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Água</ion-label>
+      <ion-input type="text" (ionInput)="formatarValorInput($event,'agua')" formControlName="agua"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Luz</ion-label>
+      <ion-input type="text" (ionInput)="formatarValorInput($event,'luz')" formControlName="luz"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Internet</ion-label>
+      <ion-input type="text" (ionInput)="formatarValorInput($event,'internet')" formControlName="internet"></ion-input>
+    </ion-item>
+
+    
+    <ion-item-divider>
+      <ion-label>Outras Contas Fixas</ion-label>
+    </ion-item-divider>
+    
+    <ng-container formArrayName="contasFixasExtras">
+      <div *ngFor="let conta of contasFixasExtras.controls; let i = index" [formGroupName]="i">
+        <ion-item>
+          <ion-input placeholder="Nome" formControlName="nome"></ion-input>
+          <ion-input placeholder="Valor" type="text" (ionInput)="formatarValorExtraInput($event, i)" formControlName="valor"></ion-input>
+          <ion-button fill="clear" color="danger" (click)="removerContaExtra(i)">
+            <ion-icon name="trash"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </div>
+    </ng-container>
+    
+    <ion-button expand="block" fill="outline" (click)="adicionarContaExtra()" class="ion-margin-top">
+      + Adicionar Conta Fixa
+    </ion-button>
+    
+    <ion-button expand="block" color="primary" (click)="salvar()" class="ion-margin-top">
+      Salvar
+    </ion-button>
+
+  </form>
+
+</ion-content>

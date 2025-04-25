@@ -4,7 +4,7 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '/inserir',
+    redirectTo: '/home',
     pathMatch: 'full'
   },
   {
@@ -18,7 +18,12 @@ const routes: Routes = [
   {
     path: 'graphic',
     loadChildren: () => import('./main/graphic/graphic.module').then( m => m.GraphicPageModule)
+  },
+  {
+    path: 'home',
+    loadChildren: () => import('./main/home/home.module').then( m => m.HomePageModule)
   }
+
 ];
 
 @NgModule({

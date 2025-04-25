@@ -1,0 +1,26 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="light">
+    <ion-menu-button slot="start" color="dark"></ion-menu-button>
+    <ion-title color="dark">Página Inicial</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Saldo do Mês</ion-card-title>
+      <ion-card-subtitle>Com base em entradas, saídas e fixas</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <h2 [ngStyle]="{ color: saldoMensal >= 0 ? 'green' : 'red' }">
+        R$ {{ saldoMensal | number: '1.2-2' }}
+      </h2>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-button expand="block" (click)="abrirModalConstantes()">
+    Editar Salário e Contas Fixas
+  </ion-button>
+
+</ion-content>

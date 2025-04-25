@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="light">
     <ion-menu-button slot="start" color="dark"></ion-menu-button>
-    <ion-title color="dark">Home</ion-title>
+    <ion-title color="dark">Inserção</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -14,11 +14,11 @@
 
     <ion-item>
       <ion-label position="floating">Valor (R$)</ion-label>
-      <ion-input type="number" formControlName="valor"></ion-input>
+      <ion-input type="text" (ionInput)="formatarValorInput($event)" formControlName="valor"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="floating">Data (DD/MM/AAAA)</ion-label>
+      <ion-label position="floating">Data</ion-label>
       <ion-input
         formControlName="data"
         type="text"
@@ -27,28 +27,62 @@
       ></ion-input>
     </ion-item>
 
-    <ion-text color="danger" *ngIf="gastoForm.get('data')?.hasError('dataInvalida') && gastoForm.get('data')?.touched">
-      <p class="ion-padding-start">Data inválida. Use um valor real.</p>
-    </ion-text>
+    <ion-item>
+      <ion-label>Tipo</ion-label>
+      <ion-segment formControlName="tipo">
+        <ion-segment-button value="saida">
+          <ion-label>Saída</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="entrada">
+          <ion-label>Entrada</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </ion-item>
 
-    <ion-button expand="full" type="submit" [disabled]="gastoForm.invalid">
+    <ion-item>
+      <ion-label position="floating">Categoria</ion-label>
+      <ion-select formControlName="categoria" interface="popover">
+        <ion-select-option value="Alimentação">Alimentação</ion-select-option>
+        <ion-select-option value="Transporte">Transporte</ion-select-option>
+        <ion-select-option value="Moradia">Moradia</ion-select-option>
+        <ion-select-option value="Lazer">Lazer</ion-select-option>
+        <ion-select-option value="Salário">Salário</ion-select-option>
+        <ion-select-option value="Outros">Outros</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-text color="danger" *ngIf="gastoForm.get('data')?.hasError('dataInvalida') && gastoForm.get('data')?.touched">
+      <p class="ion-padding-start">Data inválida. Verifique o formato e se o dia existe.</p>
+    </ion-text>
+    <ion-text color="danger" *ngIf="gastoForm.get('data')?.hasError('dataMuitoAntiga') && gastoForm.get('data')?.touched">
+      <p class="ion-padding-start">A data não pode ser anterior a 2024.</p>
+    </ion-text>
+    
+
+    <ion-button class="custom-button" size="small" type="submit" [disabled]="gastoForm.invalid">
       Adicionar
     </ion-button>
   </form>
 
   <ion-list *ngIf="listaGastos.length > 0">
+    <ion-label>Relatório do Último mês</ion-label>
     <ion-item *ngFor="let gasto of listaGastos">
       <ion-label>
         <h2>{{ gasto.nome }} - R$ {{ gasto.valor }}</h2>
-        <p>{{ gasto.data | date: 'dd/MM/yyyy' }}</p>
+        <p>
+          {{ gasto.data | date: 'dd/MM/yyyy' }} -
+          <strong [ngStyle]="{'color': gasto.tipo === 'entrada' ? 'green' : 'red'}">
+            {{ gasto.tipo === 'entrada' ? 'Entrada' : 'Saída' }}
+          </strong>
+        </p>
+        <p>
+          <ion-badge color="medium">{{ gasto.categoria }}</ion-badge>
+        </p>
       </ion-label>
     </ion-item>
   </ion-list>
 
-  <ion-button expand="full" color="danger" (click)="limparGastos()">
+  <ion-button class="custom-button danger" size="small" (click)="confirmarLimpeza()">
     Limpar Todos os Gastos
   </ion-button>
 </ion-content>
-
-<!-- <ion-button expand="full" color="tertiary" (click)="verificarDados()">
-</ion-button> -->

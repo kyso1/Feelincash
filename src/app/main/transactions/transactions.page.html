@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
-  <ion-toolbar color="success">
-    <ion-menu-button slot="start"></ion-menu-button>
+  <ion-toolbar color="light">
+    <ion-menu-button color="dark" slot="start"></ion-menu-button>
     <ion-title color="dark">Transações</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -11,6 +11,7 @@
     <ion-row>
       <ion-col size="6">
         <ion-select placeholder="Mês" (ionChange)="selecionarMes($event.detail.value)">
+          <ion-select-option value="">Todos</ion-select-option>
           <ion-select-option *ngFor="let m of [1,2,3,4,5,6,7,8,9,10,11,12]" [value]="m">
             {{ m < 10 ? '0' + m : m }}
           </ion-select-option>
@@ -18,10 +19,32 @@
       </ion-col>
       <ion-col size="6">
         <ion-select placeholder="Ano" (ionChange)="selecionarAno($event.detail.value)">
+          <ion-select-option value="">Todos</ion-select-option>
           <ion-select-option *ngFor="let a of [2023, 2024, 2025]" [value]="a">{{ a }}</ion-select-option>
         </ion-select>
       </ion-col>
     </ion-row>
+
+    <ion-row>
+      <ion-col size="6">
+        <ion-select placeholder="Tipo" (ionChange)="selecionarTipo($event.detail.value)">
+          <ion-select-option value="">Todos</ion-select-option>
+          <ion-select-option value="entrada">Entrada</ion-select-option>
+          <ion-select-option value="saida">Saída</ion-select-option>
+        </ion-select>
+      </ion-col>
+      <ion-col size="6">
+        <ion-select placeholder="Categoria" (ionChange)="selecionarCategoria($event.detail.value)">
+          <ion-select-option value="">Todas</ion-select-option>
+          <ion-select-option value="Alimentação">Alimentação</ion-select-option>
+          <ion-select-option value="Transporte">Transporte</ion-select-option>
+          <ion-select-option value="Lazer">Lazer</ion-select-option>
+          <ion-select-option value="Salário">Salário</ion-select-option>
+          <ion-select-option value="Outros">Outros</ion-select-option>
+        </ion-select>
+      </ion-col>
+    </ion-row>
+    
 
     <ion-row>
       <ion-col>
@@ -45,7 +68,15 @@
       <ion-item>
         <ion-label>
           <h2>{{ item.nome }}</h2>
-          <p>R$ {{ item.valor | number: '1.2-2' }}</p>
+          <p>
+            R$ {{ item.valor | number: '1.2-2' }} -
+            <strong [ngStyle]="{ color: item.tipo === 'entrada' ? 'green' : 'red' }">
+              {{ item.tipo === 'entrada' ? 'Entrada' : 'Saída' }}
+            </strong>
+          </p>
+          <p>
+            <ion-badge color="medium">{{ item.categoria }}</ion-badge>
+          </p>
           <small>{{ item.data | date: 'dd/MM/yyyy' }}</small>
         </ion-label>
       </ion-item>
@@ -56,6 +87,7 @@
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
+  
 
   <ng-template #semTransacoes>
     <ion-text color="medium">
@@ -63,3 +95,9 @@
     </ion-text>
   </ng-template>
 </ion-content>
+
+<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button color="danger" (click)="confirmarLimpeza()">
+    <ion-icon name="trash-outline"></ion-icon>
+  </ion-fab-button>
+</ion-fab>

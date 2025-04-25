@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AlertController, ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
 
 @Component({
@@ -10,11 +11,18 @@ import { Storage } from '@ionic/storage-angular';
 export class TransactionsPage implements OnInit {
   transacoes: any[] = [];
   transacoesFiltradas: any[] = [];
+
   filtroMes: string = '';
   filtroAno: string = '';
-  ordenacao: string = '';
+  filtroTipo: string = '';
+  filtroCategoria: string = '';
+  ordenacao: string = 'data';
 
-  constructor(private storage: Storage) {}
+  constructor(
+    private storage: Storage,
+    private toastCtrl: ToastController,
+    private alertCtrl: AlertController
+  ) {}
 
   async ngOnInit() {
     await this.storage.create();
@@ -32,7 +40,9 @@ export class TransactionsPage implements OnInit {
       const data = new Date(item.data);
       const mesOk = this.filtroMes ? data.getMonth() + 1 === +this.filtroMes : true;
       const anoOk = this.filtroAno ? data.getFullYear() === +this.filtroAno : true;
-      return mesOk && anoOk;
+      const tipoOk = this.filtroTipo ? item.tipo === this.filtroTipo : true;
+      const categoriaOk = this.filtroCategoria ? item.categoria === this.filtroCategoria : true;
+      return mesOk && anoOk && tipoOk && categoriaOk;
     });
 
     switch (this.ordenacao) {
@@ -58,14 +68,68 @@ export class TransactionsPage implements OnInit {
     this.aplicarFiltroOrdenacao();
   }
 
+  selecionarTipo(tipo: string) {
+    this.filtroTipo = tipo;
+    this.aplicarFiltroOrdenacao();
+  }
+
+  selecionarCategoria(categoria: string) {
+    this.filtroCategoria = categoria;
+    this.aplicarFiltroOrdenacao();
+  }
+
   selecionarOrdenacao(tipo: string) {
     this.ordenacao = tipo;
     this.aplicarFiltroOrdenacao();
   }
 
   async excluirTransacao(index: number) {
-    this.transacoes.splice(index, 1);
-    await this.storage.set('gastos', this.transacoes);
-    this.aplicarFiltroOrdenacao();
+    const indexReal = this.transacoes.findIndex(
+      t => t === this.transacoesFiltradas[index]
+    );
+    if (indexReal !== -1) {
+      this.transacoes.splice(indexReal, 1);
+      await this.storage.set('gastos', this.transacoes);
+      this.aplicarFiltroOrdenacao();
+    }
+  }
+
+  async exibirToast(msg: string) {
+    const toast = await this.toastCtrl.create({
+      message: msg,
+      duration: 2000,
+      position: 'bottom',
+      color: 'danger',
+    });
+    toast.present();
+  }
+
+  async confirmarLimpeza() {
+    const alert = await this.alertCtrl.create({
+      header: 'Limpar todos os gastos?',
+      message: 'Essa ação não pode ser desfeita.',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+        },
+        {
+          text: 'Confirmar',
+          role: 'destructive',
+          handler: () => {
+            this.limparGastos();
+          },
+        },
+      ],
+    });
+    await alert.present();
+  }
+
+  async limparGastos() {
+    await this.storage.remove('gastos');
+    this.transacoes = [];
+    this.transacoesFiltradas = [];
+    this.exibirToast('Todos os gastos foram apagados.');
   }
 }
