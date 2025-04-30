@@ -21,11 +21,11 @@ export class ConstantesModalComponent implements OnInit {
     private storage: Storage
   ) {
     this.form = this.fb.group({
-      salario: [0],
-      aluguel: [0],
-      agua: [0],
-      luz: [0],
-      internet: [0],
+      salario: ['0,00'],
+      aluguel: ['0,00'],
+      agua: ['0,00'],
+      luz: ['0,00'],
+      internet: ['0,00'],
       contasFixasExtras: this.fb.array([]),
     });
   }
@@ -37,7 +37,7 @@ export class ConstantesModalComponent implements OnInit {
   adicionarContaExtra() {
     const novaConta = this.fb.group({
       nome: [''],
-      valor: ['']
+      valor: ['0,00']
     });
     this.contasFixasExtras.push(novaConta);
   }
@@ -57,42 +57,53 @@ export class ConstantesModalComponent implements OnInit {
   async ngOnInit() {
     await this.storage.create();
 
-    const salario = await this.storage.get('salario');
+    const salario = await this.storage.get('salario') || 0;
     const contasFixas = await this.storage.get('contasFixas') || {};
 
     this.form.patchValue({
-      salario: salario,
-      aluguel: contasFixas.aluguel,
-      agua: contasFixas.agua,
-      luz: contasFixas.luz,
-      internet: contasFixas.internet
-    });
-
-    this.form.patchValue({
-      salario,
-      aluguel: contasFixas.aluguel,
-      agua: contasFixas.agua,
-      luz: contasFixas.luz,
-      internet: contasFixas.internet
+      salario: this.formatarValorParaExibicao(salario),
+      aluguel: this.formatarValorParaExibicao(contasFixas.aluguel || 0),
+      agua: this.formatarValorParaExibicao(contasFixas.agua || 0),
+      luz: this.formatarValorParaExibicao(contasFixas.luz || 0),
+      internet: this.formatarValorParaExibicao(contasFixas.internet || 0)
     });
     
     if (contasFixas.extras && Array.isArray(contasFixas.extras)) {
       contasFixas.extras.forEach((extra: any) => {
         this.contasFixasExtras.push(this.fb.group({
           nome: [extra.nome],
-          valor: [extra.valor]
+          valor: [this.formatarValorParaExibicao(extra.valor)]
         }));
       });
     }
   }
 
+  private formatarValorParaExibicao(valor: number): string {
+    return valor.toFixed(2).replace('.', ',');
+  }
+
+  private parseValorInput(valorString: string): number {
+    return parseFloat(valorString.replace(',', '.'));
+  }
+
   async salvar() {
-    const { salario, aluguel, agua, luz, internet, contasFixasExtras } = this.form.value;
+    const formValue = this.form.value;
+    const salario = this.parseValorInput(formValue.salario);
+    const contasFixas = {
+      aluguel: this.parseValorInput(formValue.aluguel),
+      agua: this.parseValorInput(formValue.agua),
+      luz: this.parseValorInput(formValue.luz),
+      internet: this.parseValorInput(formValue.internet),
+      extras: formValue.contasFixasExtras.map((extra: any) => ({
+        nome: extra.nome,
+        valor: this.parseValorInput(extra.valor)
+      }))
+    };
+
     await this.storage.set('salario', salario);
-    await this.storage.set('contasFixas', { aluguel, agua, luz, internet, extras: contasFixasExtras });
+    await this.storage.set('contasFixas', contasFixas);
     this.modalCtrl.dismiss();
   }
-  
 
   fechar() {
     this.modalCtrl.dismiss();

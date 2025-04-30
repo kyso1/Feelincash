@@ -1,28 +1,60 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="light">
     <ion-menu-button color="dark" slot="start"></ion-menu-button>
-    <ion-title color="dark">Gráficos</ion-title>
+    <ion-title color="dark">Gráficos Financeiros</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-button expand="block" (click)="loadChart()" class="ion-margin">
-    Carregar Gráfico
-  </ion-button>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-segment [(ngModel)]="segment" (ionChange)="segmentChanged()" color="primary">
+    <ion-segment-button value="30dias">
+      <ion-label>Últimos 30 dias</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="mensal">
+      <ion-label>Por Mês</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="categorias">
+      <ion-label>Por Categoria</ion-label>
+    </ion-segment-button>
+  </ion-segment>
 
   <div *ngIf="hasData" class="chart-container">
-    <canvas baseChart
-      [data]="chartData"
-      [options]="chartOptions"
-      [type]="chartType">
-    </canvas>
+    <!-- Gráfico dos últimos 30 dias -->
+    <div *ngIf="segment === '30dias'" class="chart-wrapper">
+      <h3 class="chart-title">Gastos dos últimos 30 dias</h3>
+      <canvas baseChart
+        [data]="chart30DiasData"
+        [options]="barChartOptions"
+        [type]="'bar'">
+      </canvas>
+    </div>
+
+    <!-- Gráfico mensal -->
+    <div *ngIf="segment === 'mensal'" class="chart-wrapper">
+      <h3 class="chart-title">Gastos por mês</h3>
+      <canvas baseChart
+        [data]="chartMensalData"
+        [options]="barChartOptions"
+        [type]="'bar'">
+      </canvas>
+    </div>
+
+    <!-- Gráfico de pizza por categoria -->
+    <div *ngIf="segment === 'categorias'" class="chart-wrapper">
+      <h3 class="chart-title">Distribuição por categoria</h3>
+      <canvas baseChart
+        [data]="chartCategoriasData"
+        [options]="pieChartOptions"
+        [type]="'pie'">
+      </canvas>
+    </div>
   </div>
 
   <div *ngIf="!hasData" class="ion-padding empty-state">
     <ion-icon name="stats-chart-outline" color="medium" class="empty-icon"></ion-icon>
     <ion-text color="medium" class="empty-text">
       <h2>Nenhum dado disponível</h2>
-      <p>Adicione gastos na página "Inserir" para visualizar o gráfico</p>
+      <p>Adicione gastos na página "Inserir" para visualizar os gráficos</p>
     </ion-text>
   </div>
 </ion-content>

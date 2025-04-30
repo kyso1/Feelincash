@@ -14,7 +14,7 @@
     <ion-list>
       <ion-item>
         <ion-label position="floating">Descrição</ion-label>
-        <ion-input formControlName="descricao" type="text"></ion-input>
+        <ion-input formControlName="nome" type="text"></ion-input>
       </ion-item>
 
       <ion-item>
@@ -37,7 +37,7 @@
       </ion-item>
 
       <ion-item>
-        <ion-label>Categoria</ion-label>
+        <ion-label position="floating">Categoria</ion-label>
         <ion-select formControlName="categoria" interface="action-sheet">
           <ion-select-option
             *ngFor="let categoria of categorias[tipoTransacao]"
@@ -51,10 +51,8 @@
 
     <ion-button
       expand="block"
-      color="primary"
       (click)="salvar()"
       [disabled]="transacaoForm.invalid"
-      class="ion-margin-top"
     >
       Salvar
     </ion-button>

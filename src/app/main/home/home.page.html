@@ -1,10 +1,10 @@
 <ion-header [translucent]="true">
-  <ion-toolbar color="light">
-    <ion-menu-button slot="start" color="dark"></ion-menu-button>
-    <ion-title color="dark">Página Inicial</ion-title>
+  <ion-toolbar>
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>Página Inicial</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="refreshPage()">
-        <ion-icon slot="icon-only" name="refresh" color="dark"></ion-icon>
+        <ion-icon slot="icon-only" name="refresh"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -13,16 +13,16 @@
 <ion-content class="ion-padding">
 
   <!-- Boas-vindas -->
-  <ion-card color="light">
+  <ion-card>
     <ion-card-header>
+      <ion-card-subtitle>BEM-VINDO AO SEU GERENCIADOR FINANCEIRO</ion-card-subtitle>
       <ion-card-title>Olá, {{ usuarioNome || 'Usuário' }}!</ion-card-title>
-      <ion-card-subtitle>Bem-vindo ao seu gerenciador financeiro</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <p>Hoje é {{ dataAtual | date:'fullDate':'':'pt-br' }}</p>
       <ion-progress-bar 
         *ngIf="diasRestantesMes"
-        [value]="diasDecorridos/diasTotalMes" 
+        [value]="diasDecorridos / diasTotalMes"
         color="primary"
         class="ion-margin-vertical"
       ></ion-progress-bar>
@@ -35,8 +35,8 @@
   <!-- Saldo do mês -->
   <ion-card>
     <ion-card-header>
+      <ion-card-subtitle>BASEADO NAS RECEITAS, DESPESAS E FIXAS</ion-card-subtitle>
       <ion-card-title>💰 Saldo do Mês</ion-card-title>
-      <ion-card-subtitle>Baseado nas receitas, despesas e fixas</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content class="ion-text-center">
       <h1 
@@ -53,14 +53,14 @@
         <ion-row>
           <ion-col size="6">
             <ion-chip color="success" outline>
-              <ion-icon name="trending-up" color="success"></ion-icon>
+              <ion-icon name="trending-up"></ion-icon>
               <ion-label>R$ {{ totalReceitas | number: '1.2-2' }}</ion-label>
             </ion-chip>
             <div class="ion-text-center">Receitas</div>
           </ion-col>
           <ion-col size="6">
             <ion-chip color="danger" outline>
-              <ion-icon name="trending-down" color="danger"></ion-icon>
+              <ion-icon name="trending-down"></ion-icon>
               <ion-label>R$ {{ totalDespesas | number: '1.2-2' }}</ion-label>
             </ion-chip>
             <div class="ion-text-center">Despesas</div>
@@ -107,9 +107,9 @@
 
   <!-- Botão flutuante -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button color="medium" (click)="abrirModalConstantes()">
+    <ion-fab-button (click)="abrirModalConstantes()">
       <ion-icon name="settings-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-
+    
 </ion-content>

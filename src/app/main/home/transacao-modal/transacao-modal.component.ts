@@ -1,22 +1,36 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController, ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
-import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ReactiveFormsModule } from '@angular/forms';
+import { IonHeader,IonSelect, IonSelectOption, IonToolbar, IonTitle, IonButtons, IonButton, IonContent, IonList, IonItem, IonLabel, IonInput } from "@ionic/angular/standalone";
 
 @Component({
   selector: 'app-transacao-modal',
+  standalone: true,
+  imports: [
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonButtons,
+    IonButton,
+    IonContent,
+    IonList,
+    IonItem,
+    IonLabel,
+    IonInput,
+    IonSelect,             
+    IonSelectOption,       
+    ReactiveFormsModule    
+  ],
   templateUrl: './transacao-modal.component.html',
   styleUrls: ['./transacao-modal.component.scss'],
-  standalone: true,
-  imports: [CommonModule, IonicModule, ReactiveFormsModule]
 })
+
+
 export class TransacaoModalComponent implements OnInit {
   @Input() tipoTransacao: 'entrada' | 'saida' = 'saida';
-
   transacaoForm: FormGroup;
+  listaGastos: any[] = [];
 
   categorias = {
     entrada: ['Salário', 'Freelance', 'Investimentos', 'Presente', 'Outros'],
@@ -30,45 +44,77 @@ export class TransacaoModalComponent implements OnInit {
     private fb: FormBuilder
   ) {
     this.transacaoForm = this.fb.group({
-      descricao: ['', Validators.required],
-      valor: [null, [Validators.required, Validators.min(0.01)]],
-      data: [this.obterDataHoje(), [Validators.required, this.validarDataReal()]],
-      categoria: ['', Validators.required]
+      nome: ['', Validators.required],
+      valor: ['', [Validators.required, this.validarValorMinimo]],
+      data: [this.obterDataHoje(), [Validators.required, this.validarDataReal]],
+      categoria: [this.tipoTransacao === 'entrada' ? 'Salário' : 'Outros', Validators.required]
     });
+  }
+
+  validarValorMinimo(control: AbstractControl) {
+    const valor = control.value;
+    if (!valor) return null;
+    
+    const valorNumerico = parseFloat(valor.replace(',', '.'));
+    return valorNumerico >= 0.01 ? null : { valorMinimo: true };
   }
 
   async ngOnInit() {
     await this.storage.create();
+    await this.carregarGastos();
+  
+    this.transacaoForm = this.fb.group({
+      nome: ['', Validators.required],
+      valor: ['', [Validators.required, this.validarValorMinimo]],
+      data: [this.obterDataHoje(), [Validators.required, this.validarDataReal]],
+      categoria: [this.tipoTransacao === 'entrada' ? 'Salário' : 'Outros', Validators.required]
+    });
+  }
+  
+
+  async carregarGastos() {
+    const dados = await this.storage.get('gastos') || [];
+    const hoje = new Date();
+    const umMesAtras = new Date(hoje.getFullYear(), hoje.getMonth() - 1, hoje.getDate());
+  
+    this.listaGastos = dados.filter((gasto: any) => {
+      const dataGasto = new Date(gasto.data);
+      return dataGasto >= umMesAtras;
+    });
   }
 
   async salvar() {
-    if (this.transacaoForm.valid) {
-      const { descricao, valor, data, categoria } = this.transacaoForm.value;
-      const [dia, mes, ano] = data.split('/');
-      const dataConvertida = new Date(+ano, +mes - 1, +dia);
-
-      const novaTransacao = {
-        nome: descricao,
-        valor: parseFloat(valor),
-        data: dataConvertida.toISOString(),
-        tipo: this.tipoTransacao,
-        categoria
-      };
-
-      const transacoes = await this.storage.get('gastos') || [];
-      transacoes.push(novaTransacao);
-      await this.storage.set('gastos', transacoes);
-
-      this.exibirToast('Transação salva com sucesso!');
-      this.modalCtrl.dismiss();
+    if (this.transacaoForm.invalid) {
+      this.exibirToast('Por favor, preencha todos os campos corretamente', 'danger');
+      return;
     }
-  }
+
+    const formValue = this.transacaoForm.value;
+    const [dia, mes, ano] = formValue.data.split('/');
+    const dataConvertida = new Date(+ano, +mes - 1, +dia);
+
+    const novaTransacao = {
+      nome: formValue.nome,
+      valor: parseFloat(formValue.valor.replace(',', '.')),
+      data: dataConvertida.toISOString(),
+      tipo: this.tipoTransacao,
+      categoria: formValue.categoria
+    };
+
+    try {
+      this.listaGastos.push(novaTransacao);
+      await this.storage.set('gastos', this.listaGastos);
+      this.exibirToast('Transação salva com sucesso!');
+      this.modalCtrl.dismiss({ status: 'salvo' });
+    } catch (error) {
+      console.error('Erro ao salvar transação:', error);
+      this.exibirToast('Erro ao salvar transação', 'danger');
+    }
+}
 
   cancelar() {
-    this.exibirToast('Cancelado!', 'medium');
-    this.modalCtrl.dismiss();
+    this.modalCtrl.dismiss({ status: 'cancelado' });
   }
-  
 
   validarDataReal() {
     return (control: AbstractControl) => {
@@ -129,5 +175,5 @@ export class TransacaoModalComponent implements OnInit {
       color
     });
     toast.present();
-  }  
+  }
 }

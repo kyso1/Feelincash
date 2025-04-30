@@ -1,32 +1,52 @@
+ion-content {
+  --background: #f5f5f5;
+}
+
+.chart-container {
+  margin-top: 20px;
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.chart-wrapper {
+  position: relative;
+  height: 70vh;
+  width: 100%;
+}
+
+.chart-title {
+  text-align: center;
+  color: var(--ion-color-primary);
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
 .empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  height: 70vh;
   text-align: center;
-  height: 60vh;
-  
-  .empty-icon {
-    font-size: 64px;
-    margin-bottom: 16px;
-  }
-
-  .empty-text {
-    h2 {
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
-    
-    p {
-      margin: 0;
-      opacity: 0.8;
-    }
-  }
 }
 
-.chart-container {
-  position: relative;
-  margin: 20px auto;
-  height: 70vh;
-  width: 95%;
+.empty-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.empty-text h2 {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.empty-text p {
+  margin: 0;
+  opacity: 0.8;
+}
+
+ion-segment {
+  margin-bottom: 16px;
 }
