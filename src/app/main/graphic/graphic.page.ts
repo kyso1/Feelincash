@@ -3,6 +3,7 @@ import { Storage } from '@ionic/storage-angular';
 import { ChartConfiguration, ChartType } from 'chart.js';
 import { registerables } from 'chart.js';
 import { Chart } from 'chart.js';
+import { DatabaseService } from 'src/app/services/database.service';
 
 @Component({
   selector: 'app-graphic',
@@ -114,13 +115,16 @@ export class GraphicPage implements OnInit {
     '#FF9F40', '#8AC24A', '#F06292', '#7986CB', '#A1887F'
   ];
 
-  constructor(private storage: Storage) {
+  constructor(private databaseService: DatabaseService) {
     Chart.register(...registerables);
   }
 
   async ngOnInit() {
-    await this.storage.create();
-    this.loadCharts();
+    await this.carregarDados();
+  }
+
+  async ionViewWillEnter() {
+    await this.carregarDados();
   }
 
   segmentChanged() {
@@ -128,9 +132,21 @@ export class GraphicPage implements OnInit {
     this.loadCharts();
   }
 
+  async carregarDados() {
+    const dados: any[] = (await this.databaseService.get('gastos')) || [];
+    // Processar os dados para os gráficos
+    this.processarDadosParaGraficos(dados);
+  }
+
+  private processarDadosParaGraficos(dados: any[]) {
+    this.processar30Dias(dados);
+    this.processarMensal(dados);
+    this.processarCategorias(dados);
+  }
+
   async loadCharts() {
     try {
-      const gastos: any[] = await this.storage.get('gastos') || [];
+      const gastos: any[] = await this.databaseService.get('gastos') || [];
       this.hasData = gastos.length > 0;
 
       if (!this.hasData) return;

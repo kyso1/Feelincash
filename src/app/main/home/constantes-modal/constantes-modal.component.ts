@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { Storage } from '@ionic/storage-angular';
+import { DatabaseService } from 'src/app/services/database.service';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -18,7 +18,7 @@ export class ConstantesModalComponent implements OnInit {
   constructor(
     private modalCtrl: ModalController,
     private fb: FormBuilder,
-    private storage: Storage
+    private databaseService: DatabaseService
   ) {
     this.form = this.fb.group({
       salario: ['0,00'],
@@ -55,21 +55,19 @@ export class ConstantesModalComponent implements OnInit {
   }
 
   async ngOnInit() {
-    await this.storage.create();
-
-    const salario = await this.storage.get('salario') || 0;
-    const contasFixas = await this.storage.get('contasFixas') || {};
+    const salario = (await this.databaseService.get<number>('salario')) || 0;
+    const contasFixas = (await this.databaseService.get<{ [key: string]: any }>('contasFixas')) || {};
 
     this.form.patchValue({
       salario: this.formatarValorParaExibicao(salario),
-      aluguel: this.formatarValorParaExibicao(contasFixas.aluguel || 0),
-      agua: this.formatarValorParaExibicao(contasFixas.agua || 0),
-      luz: this.formatarValorParaExibicao(contasFixas.luz || 0),
-      internet: this.formatarValorParaExibicao(contasFixas.internet || 0)
+      aluguel: this.formatarValorParaExibicao(contasFixas['aluguel'] || 0),
+      agua: this.formatarValorParaExibicao(contasFixas['agua'] || 0),
+      luz: this.formatarValorParaExibicao(contasFixas['luz'] || 0),
+      internet: this.formatarValorParaExibicao(contasFixas['internet'] || 0)
     });
     
-    if (contasFixas.extras && Array.isArray(contasFixas.extras)) {
-      contasFixas.extras.forEach((extra: any) => {
+    if (contasFixas['extras'] && Array.isArray(contasFixas['extras'])) {
+      contasFixas['extras'].forEach((extra: any) => {
         this.contasFixasExtras.push(this.fb.group({
           nome: [extra.nome],
           valor: [this.formatarValorParaExibicao(extra.valor)]
@@ -100,8 +98,8 @@ export class ConstantesModalComponent implements OnInit {
       }))
     };
 
-    await this.storage.set('salario', salario);
-    await this.storage.set('contasFixas', contasFixas);
+    await this.databaseService.set('salario', salario);
+    await this.databaseService.set('contasFixas', contasFixas);
     this.modalCtrl.dismiss();
   }
 

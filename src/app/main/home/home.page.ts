@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, ToastController } from '@ionic/angular';
-import { Storage } from '@ionic/storage-angular';
+import { DatabaseService } from 'src/app/services/database.service';
 import { ConstantesModalComponent } from './constantes-modal/constantes-modal.component';
 import { TransacaoModalComponent } from './transacao-modal/transacao-modal.component';
 import { registerLocaleData } from '@angular/common';
@@ -44,13 +44,12 @@ export class HomePage implements OnInit {
   ];
 
   constructor(
-    private storage: Storage,
+    private databaseService: DatabaseService,
     private modalCtrl: ModalController,
     private toastCtrl: ToastController
   ) {}
 
   async ngOnInit() {
-    await this.storage.create();
     await this.carregarDadosUsuario();
     await this.carregarConstantes();
     await this.calcularSaldoMensal();
@@ -58,17 +57,22 @@ export class HomePage implements OnInit {
     this.gerarDicaDoDia();
   }
 
+  async ionViewWillEnter() {
+    await this.carregarConstantes();
+    await this.calcularSaldoMensal();
+  }
+
   async carregarDadosUsuario() {
-    this.usuarioNome = (await this.storage.get('nomeUsuario')) || 'Usuário';
+    this.usuarioNome = (await this.databaseService.get<string>('nomeUsuario')) || 'Usuário';
   }
 
   async carregarConstantes() {
-    this.salario = (await this.storage.get('salario')) || 0;
-    this.contasFixas = (await this.storage.get('contasFixas')) || {};
+    this.salario = (await this.databaseService.get<number>('salario')) || 0;
+    this.contasFixas = (await this.databaseService.get<{ [key: string]: number }>('contasFixas')) || {};
   }
 
   async calcularSaldoMensal() {
-    const dados = await this.storage.get('gastos') || [];
+    const dados = (await this.databaseService.get<any[]>('gastos')) || [];
     const hoje = new Date();
     const primeiroDiaMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
     

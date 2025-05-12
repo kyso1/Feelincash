@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, ToastController } from '@ionic/angular';
-import { Storage } from '@ionic/storage-angular';
+import { DatabaseService } from 'src/app/services/database.service';
 
 @Component({
   selector: 'app-transactions',
@@ -19,19 +19,18 @@ export class TransactionsPage implements OnInit {
   ordenacao: string = 'data';
 
   constructor(
-    private storage: Storage,
+    private databaseService: DatabaseService,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController
   ) {}
 
   async ngOnInit() {
-    await this.storage.create();
     this.carregarTransacoes();
   }
 
   async carregarTransacoes() {
-    const dados = await this.storage.get('gastos');
-    this.transacoes = dados || [];
+    const dados: any[] = (await this.databaseService.get('gastos')) || [];
+    this.transacoes = dados;
     this.aplicarFiltroOrdenacao();
   }
 
@@ -89,7 +88,7 @@ export class TransactionsPage implements OnInit {
     );
     if (indexReal !== -1) {
       this.transacoes.splice(indexReal, 1);
-      await this.storage.set('gastos', this.transacoes);
+      await this.databaseService.set('gastos', this.transacoes);
       this.aplicarFiltroOrdenacao();
     }
   }
@@ -127,7 +126,7 @@ export class TransactionsPage implements OnInit {
   }
 
   async limparGastos() {
-    await this.storage.remove('gastos');
+    await this.databaseService.remove('gastos');
     this.transacoes = [];
     this.transacoesFiltradas = [];
     this.exibirToast('Todos os gastos foram apagados.');

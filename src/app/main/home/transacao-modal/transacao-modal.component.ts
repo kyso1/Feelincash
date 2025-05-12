@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController, ToastController } from '@ionic/angular';
-import { Storage } from '@ionic/storage-angular';
+import { DatabaseService } from 'src/app/services/database.service';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { IonHeader,IonSelect, IonSelectOption, IonToolbar, IonTitle, IonButtons, IonButton, IonContent, IonList, IonItem, IonLabel, IonInput } from "@ionic/angular/standalone";
 
@@ -40,7 +40,7 @@ export class TransacaoModalComponent implements OnInit {
   constructor(
     private modalCtrl: ModalController,
     private toastCtrl: ToastController,
-    private storage: Storage,
+    private databaseService: DatabaseService,
     private fb: FormBuilder
   ) {
     this.transacaoForm = this.fb.group({
@@ -60,7 +60,6 @@ export class TransacaoModalComponent implements OnInit {
   }
 
   async ngOnInit() {
-    await this.storage.create();
     await this.carregarGastos();
   
     this.transacaoForm = this.fb.group({
@@ -73,7 +72,7 @@ export class TransacaoModalComponent implements OnInit {
   
 
   async carregarGastos() {
-    const dados = await this.storage.get('gastos') || [];
+    const dados = (await this.databaseService.get<any[]>('gastos')) || [];
     const hoje = new Date();
     const umMesAtras = new Date(hoje.getFullYear(), hoje.getMonth() - 1, hoje.getDate());
   
@@ -103,7 +102,7 @@ export class TransacaoModalComponent implements OnInit {
 
     try {
       this.listaGastos.push(novaTransacao);
-      await this.storage.set('gastos', this.listaGastos);
+      await this.databaseService.set('gastos', this.listaGastos);
       this.exibirToast('Transação salva com sucesso!');
       this.modalCtrl.dismiss({ status: 'salvo' });
     } catch (error) {

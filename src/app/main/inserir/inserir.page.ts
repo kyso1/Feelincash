@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { ToastController } from '@ionic/angular';
+import { ToastController, NavController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
+import { DatabaseService } from 'src/app/services/database.service';
 
 @Component({
   selector: 'app-inserir',
@@ -15,10 +16,11 @@ export class InserirPage implements OnInit {
   listaGastos: any[] = [];
 
   constructor(
-    private storage: Storage,
+    private databaseService: DatabaseService,
     private fb: FormBuilder,
     private toastCtrl: ToastController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private navCtrl: NavController
   ) {
     this.gastoForm = this.fb.group({
       nome: ['', Validators.required],
@@ -30,16 +32,14 @@ export class InserirPage implements OnInit {
   }
 
   async ngOnInit() {
-    await this.storage.create();
     this.carregarGastos();
   }
 
   async carregarGastos() {
-    const dados = await this.storage.get('gastos');
+    const dados: any[] = (await this.databaseService.get('gastos')) || [];
     const hoje = new Date();
     const umMesAtras = new Date(hoje.getFullYear(), hoje.getMonth() - 1, hoje.getDate());
-  
-    this.listaGastos = (dados || []).filter((gasto: any) => {
+    this.listaGastos = dados.filter((gasto: any) => {
       const dataGasto = new Date(gasto.data);
       return dataGasto >= umMesAtras;
     });
@@ -61,16 +61,13 @@ export class InserirPage implements OnInit {
       };
   
       this.listaGastos.push(novoGasto);
-      await this.storage.set('gastos', this.listaGastos);
+      await this.databaseService.set('gastos', this.listaGastos);
       this.gastoForm.reset({ tipo: 'saida', categoria: 'Outros' });
       this.exibirToast('Gasto salvo com sucesso!');
-    }
-  }
 
-  async limparGastos() {
-    await this.storage.remove('gastos');
-    this.listaGastos = [];
-    this.exibirToast('Todos os gastos foram apagados.');
+      // Navegar de volta para a página inicial
+      this.navCtrl.navigateBack('/home');
+    }
   }
 
   validarDataReal() {
@@ -139,34 +136,16 @@ export class InserirPage implements OnInit {
   }
 
   async verificarDados() {
-    const dados = await this.storage.get('gastos');
+    const dados = await this.databaseService.get<any[]>('gastos');
     console.log('Dados atuais no Storage:', dados);
-    if (dados) {
+    if (Array.isArray(dados) && dados.length > 0) {
       console.log('Último gasto:', dados[dados.length - 1]);
       console.log('Data do último gasto:', new Date(dados[dados.length - 1].data));
     }
   }
 
   async confirmarLimpeza() {
-    const alert = await this.alertController.create({
-      header: 'Confirmar Limpeza',
-      message: 'Você tem certeza que deseja limpar todos os gastos?',
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-          cssClass: 'secondary',
-        },
-        {
-          text: 'Limpar',
-          handler: () => {
-            this.limparGastos();
-          },
-        },
-      ],
-    });
-    await alert.present();
-
+    // Removendo a funcionalidade de limpar todos os gastos
   }
 
 }

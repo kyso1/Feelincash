@@ -40,3 +40,121 @@
     }
     
   }
+
+:host {
+  --ion-background-color: linear-gradient(180deg, #1f2c3f, #1c1f2b);
+  --ion-text-color: #ffffff;
+  background: var(--ion-background-color);
+  color: var(--ion-text-color);
+  display: block;
+  height: 100%;
+  font-family: 'Roboto', sans-serif;
+}
+
+ion-toolbar {
+  --background: #2c3e50;
+  --color: #ffffff;
+}
+
+ion-title,
+ion-menu-button,
+ion-icon {
+  color: #ffffff !important;
+}
+
+ion-content {
+  --background: transparent;
+  padding-bottom: 80px; /* Deixa espaço para o botão flutuante */
+}
+
+form {
+  background: rgba(255, 255, 255, 0.1); /* Fundo com efeito de vidro */
+  backdrop-filter: blur(10px); /* Desfoque para o efeito de vidro */
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  margin: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Adicionando contraste nas separações */
+}
+
+ion-item {
+  --background: transparent;
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Adicionando contraste entre os itens */
+}
+
+ion-label {
+  color: #ffffff;
+}
+
+ion-input {
+  color: #ffffff;
+}
+
+ion-card {
+  background: #2c3e50;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  color: #ffffff;
+  margin: 16px;
+}
+
+ion-card-title,
+ion-card-subtitle {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+ion-card-content p,
+ion-card-content div {
+  color: #dcdcdc;
+}
+
+ion-button {
+  font-weight: bold;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+ion-button.custom-button {
+  font-weight: bold;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  margin-top: 16px;
+}
+
+ion-button.danger {
+  --background: #e74c3c;
+  --color: #ffffff;
+}
+
+ion-fab {
+  position: fixed;
+  bottom: 16px;  /* Ajuste a distância do fundo */
+  right: 16px;   /* Ajuste a distância da direita */
+  z-index: 10;   /* Garante que o botão fique sobre outros elementos */
+}
+
+ion-fab-button {
+  --background: #3d3d3d;
+  --color: #ffffff;
+  z-index: 10;
+  position: absolute;
+  bottom: 20px;  /* Distância do fundo */
+  right: 20px;   /* Distância da borda direita */
+}
+
+ion-list {
+  background: rgba(255, 255, 255, 0.1); /* Fundo com efeito de vidro */
+  backdrop-filter: blur(10px); /* Desfoque para o efeito de vidro */
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  margin: 16px;
+}
+
+ion-badge {
+  --background: rgba(255, 255, 255, 0.2);
+  --color: #ffffff;
+  font-weight: bold;
+}

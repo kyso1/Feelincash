@@ -1,112 +1,109 @@
 :host {
-    --ion-background-color: linear-gradient(180deg, #1f2c3f, #1c1f2b);
+    --ion-background-color: rgba(255, 255, 255, 0.1); /* Fundo transparente */
     --ion-text-color: #ffffff;
     background: var(--ion-background-color);
+    backdrop-filter: blur(10px); /* Apply blur effect */
+    -webkit-backdrop-filter: blur(10px); /* Desfoque para navegadores baseados em WebKit */
     color: var(--ion-text-color);
     display: block;
     height: 100%;
     font-family: 'Roboto', sans-serif;
-  }
-  
-  ion-toolbar {
+}
+
+ion-toolbar {
     --background: #2c3e50;
     --color: #ffffff;
-  }
-  
-  ion-title,
-  ion-menu-button,
-  ion-icon {
+}
+
+ion-title,
+ion-menu-button,
+ion-icon {
     color: #ffffff !important;
-  }
-  
-  ion-content {
+}
+
+ion-content {
     --background: transparent;
     --ion-padding-start: 16px;
     --ion-padding-end: 16px;
-  }
-  
-  ion-card {
-    background: #2c3e50;
+}
+
+ion-card {
+    background: rgba(255, 255, 255, 0.2); /* Fundo semi-transparente */
+    backdrop-filter: blur(10px); /* Desfoque */
+    -webkit-backdrop-filter: blur(10px); /* Desfoque para navegadores baseados em WebKit */
     border-radius: 16px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     color: #ffffff;
-  }
-  
-  ion-card-title,
-  ion-card-subtitle {
+}
+
+ion-card-title,
+ion-card-subtitle {
     color: #ffffff;
     font-weight: bold;
-  }
-  
-  ion-card-content p,
-  ion-card-content div {
+}
+
+ion-card-content p,
+ion-card-content div {
     color: #dcdcdc;
-  }
-  
-  ion-chip {
+}
+
+ion-chip {
     font-size: 1rem;
     padding: 0 10px;
     border-radius: 20px;
     font-weight: 500;
-  }
-  
-  ion-chip ion-icon {
+}
+
+ion-chip ion-icon {
     margin-right: 6px;
-  }
-  
-  ion-button {
+}
+
+ion-button {
     font-weight: bold;
     border-radius: 12px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  }
-  
-  ion-card[color="tertiary"] {
+}
+
+ion-card[color="tertiary"] {
     background-color: #1abc9c !important;
     color: #ffffff;
-  }
-  
-  ion-fab-button {
+}
+
+ion-fab-button {
     --background: #3d3d3d;
     --color: #ffffff;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  }
-  
-  ion-item {
+}
+
+ion-item {
     --ion-background-color: #ffffff;
     border-radius: 12px;
     margin-bottom: 16px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  }
-  
-  ion-label {
+}
+
+ion-label {
     color: #444;
     font-weight: 500;
-  }
-  
-  ion-input {
+}
+
+ion-input {
     --padding-start: 10px;
     --padding-end: 10px;
-  }
-  
-  ion-button {
+}
+
+ion-button {
     margin-top: 24px;
     border-radius: 12px;
     font-weight: 600;
-  }
-  
-  ion-item-divider {
+}
+
+ion-item-divider {
     background: #2c3e50;
     color: #ffffff;
-  }
-  
-  ion-button.clear {
+}
+
+ion-button.clear {
     color: #e74c3c;
-  }
-  
-  ion-fab {
-    vertical: bottom;
-    horizontal: start;
-    slot: fixed;
-  }
-  
-  
+}
+

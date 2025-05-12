@@ -72,20 +72,20 @@ ion-fab-button {
 }
 
 ion-item {
-  --ion-background-color: #ffffff;
-  border-radius: 12px;
-  margin-bottom: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --background: transparent;
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Adicionando contraste entre os itens */
 }
 
 ion-label {
-  color: #444;
+  color: #ffffff;
   font-weight: 500;
 }
 
 ion-input {
   --padding-start: 10px;
   --padding-end: 10px;
+  color: #ffffff;
 }
 
 ion-button {
@@ -95,8 +95,19 @@ ion-button {
 }
 
 ion-fab {
-  vertical: bottom;
-  horizontal: start;
-  slot: fixed;
+  position: fixed;
+  bottom: 16px; /* Ajuste a distância do fundo */
+  left: 16px; /* Ajuste a distância da esquerda */
+  z-index: 10; /* Garante que o botão fique sobre outros elementos */
+}
+
+form {
+  background: rgba(255, 255, 255, 0.1); /* Fundo com efeito de vidro */
+  backdrop-filter: blur(10px); /* Desfoque para o efeito de vidro */
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  margin: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Adicionando contraste nas bordas */
 }
 
